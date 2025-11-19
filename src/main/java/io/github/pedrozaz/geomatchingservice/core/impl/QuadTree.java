@@ -79,6 +79,27 @@ public class QuadTree {
         this.points.clear();
     }
 
+    public void search(BoundingBox searchRegion, List<DriverLocation> results) {
+        if (!this.boundary.intersects(searchRegion)) {
+            return;
+        }
+
+        if (!this.points.isEmpty()) {
+           for (DriverLocation driver : this.points) {
+               if (searchRegion.contains(driver.location())) {
+                   results.add(driver);
+               }
+           }
+        }
+
+        if (this.divided) {
+            this.northWest.search(searchRegion, results);
+            this.northEast.search(searchRegion, results);
+            this.southWest.search(searchRegion, results);
+            this.southEast.search(searchRegion, results);
+        }
+    }
+
     public boolean isDivided() { return divided; }
     public int getPointCount() { return points.size(); }
     public List<DriverLocation> getPoints() { return new ArrayList<>(points); }
